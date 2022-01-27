@@ -1,0 +1,15 @@
+receptor = receptor.pdbqt
+ligand = ligand.pdbqt
+
+num_modes = 8
+center_x = ##xx
+center_y = ##yy
+center_z = ##zz
+
+size_x = 25
+size_y = 25
+size_z = 25
+
+exhaustiveness = 8
+energy_range = 2
+cpu=1
