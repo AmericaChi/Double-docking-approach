@@ -5,26 +5,26 @@
 #this algorithm need: config.txt, config_flex.txt, protein$i.pdb and peptide$j.pdb files in the rooth directory.
 #call via: bash double_docking_general.sh
 # Author: L. América Chi
-#27.01.2022 
+#12.05.2022 
 #########################################
 
 # environment variable definitions                                                                                                                                    
-export vina=''
-export pdbqt2pdb=''
-export pythonsh=''
-UTILITIES=
+export vina='/path/bin/vina'
+export pdbqt2pdb='/path/MGLToolsPckgs/AutoDockTools/Utilities24/pdbqt_to_pdb.py'
+export pythonsh='/path/MGLTools-1.5.6/mgltools_x86_64Linux2_1.5.6/bin/pythonsh'
+UTILITIES=/path/MGLTools-1.5.6/mgltools_x86_64Linux2_1.5.6/MGLToolsPckgs/AutoDockTools/Utilities24
 # end variable definitions
 
 for i in 0 1 2; do
-        receptor=protein${i}
+        receptor=dendri${i}
         mkdir -p $receptor
         rm -f receptor.pdb
         rm -f receptor.pdbqt
-        cp $i  receptor.pdb
+        cp ${receptor}.pdb  receptor.pdb
 
         $pythonsh ${UTILITIES}/prepare_receptor4.py -r receptor.pdb -o receptor.pdbqt
 
-        for j in 0 1 2; do
+        for j in 0 1 2 3 4 5; do
         ligand=peptide${j}
         mkdir -p $receptor/$ligand
         cp receptor.pdbqt $receptor/$ligand/receptor.pdbqt
@@ -33,7 +33,7 @@ for i in 0 1 2; do
         cp config.txt $receptor/$ligand
         cp config_flex.txt $receptor/$ligand
         cd $receptor/$ligand
-        
+
         ### starts first blind rigid docking
         $pythonsh ${UTILITIES}/prepare_ligand4.py -l ligand.pdb -Z -o ligand.pdbqt
         $vina --config config.txt > vina.log
@@ -43,14 +43,14 @@ for i in 0 1 2; do
         grep -Ev 'ENDMDL' complex.pdb > complex_out.pdb
 
         #localize your new box center, grep should be modified according to your system
-        n=P${j}p${i}
+        n=D${i}p${j}
         p=`grep 'CA  TYR     4 ' complex_out.pdb | awk 'BEGIN{OFS="\t\t";}{print $6, $7, $8}'`;
         echo "${n}  ${p}" >> ubica.txt;
 
         local=${ligand}'_local'
-        x=`grep "P"${i}"p"${f} ubica.txt | awk '{print $2}'`
-        y=`grep "P"${i}"p"${f} ubica.txt | awk '{print $3}'`
-        z=`grep "P"${i}"p"${f} ubica.txt | awk '{print $4}'`
+        x=`grep "D"${i}"p"${j} ubica.txt | awk '{print $2}'`
+        y=`grep "D"${i}"p"${j} ubica.txt | awk '{print $3}'`
+        z=`grep "D"${i}"p"${j} ubica.txt | awk '{print $4}'`
         ### end localize
         ### end first docking
 
@@ -74,9 +74,7 @@ for i in 0 1 2; do
         grep -Ev 'ENDMDL' complex.pdb > complex_out.pdb
         ### end second docking
 
-        cd ../../
+        cd ../../../
 
         done
-
-cd ../
 done
