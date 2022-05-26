@@ -7,7 +7,11 @@
 #call via: bash double_docking_general.sh
 # Author: L. América Chi
 #27.01.2022 
-# Please cite: (pending).
+# If useful for your project Please cite: BioRxiv doi: https://doi.org/10.1101/2022.05.23.493150.
+THANKS!!!!!
 #########################################
 
 A double molecular docking is performed in order to have initial dendrimer/protein-peptide complexes by using Autodock Vina program. First, a blind rigid docking is performed separately for all combinations of conformers/structures. Once the peptide found a binding site, a second flexible local docking is performed in this area for each system allowing a better adaptation in the binding site.
+
+
+#######
